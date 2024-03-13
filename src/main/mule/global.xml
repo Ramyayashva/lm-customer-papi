@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:amqp="http://www.mulesoft.org/schema/mule/amqp"
+	xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd 
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd">
+	    <http:listener-config name="lm-customer-papi-httpListenerConfig">
+        <http:listener-connection host="${http.host}" port="${http.port}" readTimeout="${http.readtimeout}"/>
+    </http:listener-config>
+    <apikit:config name="lm-customer-papi-config" api="resource::5bf14b7b-b805-4fa3-b657-fccb6ea30df9:lm-customer-papi:1.0.0:raml:zip:lm-customer-papi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+	<api-gateway:autodiscovery apiId="19304177" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="cd266fc4-b1fb-4194-995a-f5ff3e4d20a6" flowRef="lm-customer-papi-main" />
+	    <configuration-properties doc:name="Configuration properties" doc:id="d2a61210-0983-492a-a154-05cd473ed2bb" file="${mule.env}.yaml" />
+    <global-property doc:name="Global Property" doc:id="55d600dc-0d41-48c1-aaf5-db4fa84729e8" name="mule.key" value="Training@9876543" />
+    <global-property doc:name="Global Property" doc:id="35b56b43-628b-49da-b9ba-ed3e5fe555ef" name="mule.env" value="dev" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="253a4245-4ffc-4da2-bef9-7d830beee4e5" file="${mule.env}.yaml" key="${mule.key}" />
+		<tls:context name="TLS_Context" doc:name="TLS Context" doc:id="614b278e-136f-4360-bef4-6cf43d44ecc3" >
+		<tls:trust-store insecure="true" />
+		<tls:key-store type="jks" path="${ks.file}" alias="${ks.alias}" keyPassword="${secure::ks.password}" password="${secure::ks.password}" />
+	</tls:context>
+
+	<amqp:config name="AMQP_Config" doc:name="AMQP Config" doc:id="5e6b1659-2b02-4ea4-8384-d7c1a8c30167" >
+		<amqp:connection host="armadillo-01.rmq.cloudamqp.com" port="5672" virtualHost="pkrrbesl" username="pkrrbesl" password="5wgLf-9NbMeUWeb9mMkXaXA2i7brK8xz"  />
+	</amqp:config>
+	<import doc:name="Import" doc:id="a1bd3bf7-2bd2-4a9c-84f0-35b3400a4fff" file="global-error-handler.xml" />
+	
+	
+</mule>

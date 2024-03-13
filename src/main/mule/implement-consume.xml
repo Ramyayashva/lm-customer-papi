@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:amqp="http://www.mulesoft.org/schema/mule/amqp" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd">
+	<flow name="implement-consumeFlow" doc:id="7e680b39-4bf9-4e1b-8f10-c7de5ddba3ac" >
+		<amqp:consume doc:name="Consume" doc:id="31e25681-0177-45d1-acef-6b5adbd356db" config-ref="AMQP_Config" queueName="dev-test-queue" />
+		<logger level="INFO" doc:name="Product retraival" doc:id="3009ef6d-b418-4707-81c4-5b625b56c9fe" message="#[payload]"/>
+		<error-handler ref="global-error-handlerError_Handler" />
+	</flow>
+</mule>

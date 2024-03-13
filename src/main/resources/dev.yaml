@@ -1,0 +1,48 @@
+soap:
+  host: "localhost"
+  port: "22"
+  username: "HP"
+  password: "![pQgaG1hhBFK1ekKO2/33Mw==]"
+dir:
+  folder: "/C:/Users/HP/SFTPsecureKey"
+  folder2: "/C:/Users/HP/SFTPsecureKey/file"
+  folder3: "/C:/Users/HP/SFTPsecureKey/file3"
+  folder4: "/C:/Users/HP/SFTPsecureKey/file2"
+http:
+  host: "0.0.0.0"
+  port: "8082"
+  path: "/api/*"
+  readtimeout: "30000"
+  idletimeout: "40000"
+ks: 
+  file: "key_store.jks"
+  alias: "mule-server"
+  password: "![qY6KRSszo6NQs777/hunwg==]"
+  
+cloudhub:
+  username: "Ramachandran231195"
+  password: "![lTqPPKEiWbSvnzblv9XpRA==]"
+
+DataBase:
+  host: "database-1.cpo3aaq626o7.eu-north-1.rds.amazonaws.com"
+  port: "3306"
+  user: "admin"
+  password: "![tGMW+O7ZlYnH3wHvWm301A==]"
+  database: "product"  
+  
+lm-aws:
+  host: "lm-aws-sapi.us-e2.cloudhub.io"
+  port: "443"
+  postpath: "/api/products"
+  getpath: "/api/products/10"
+  idletimeout: "30000"
+
+lm-product:
+  host: "lm-product-papi.us-e2.cloudhub.io"
+  port: "443"
+  postpath: "/api/productcatalog"
+  getpath: "/api/products/10"
+  idletimeout: "30000" 
+client:
+  client_secret: "![qrk7LOudGI2/OgNhLNRH9iZ3VQQERg5TC2yXWqzlOQJRLY6Jhp/Ca3sGHG++psre]"
+  "client_id" : "![Vb5x5R6NKGR7f3hYLU2g7yhrBQlcn+iSnpKxRLhUVSlXy6NknSefEw8lKOzKfrWD]"

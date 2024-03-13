@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+    <flow name="lm-customer-papi-main">
+        <http:listener config-ref="lm-customer-papi-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="lm-customer-papi-config" />
+		<error-handler ref="global-error-handlerError_Handler" />
+    </flow>
+    <flow name="lm-customer-papi-console">
+        <http:listener config-ref="lm-customer-papi-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="lm-customer-papi-config" />
+		<error-handler ref="global-error-handlerError_Handler" />
+    </flow>
+    <flow name="put:\customers\(customerid):application\json:lm-customer-papi-config">
+        <ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="customerid">attributes.uriParams.'customerid'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  code: "SUCCESS",
+  message: "successfully retrive the data"
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<error-handler ref="global-error-handlerError_Handler" />
+    </flow>
+    <flow name="put:\order\(orderid):application\json:lm-customer-papi-config">
+        <ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="orderid">attributes.uriParams.'orderid'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  code: "SUCCESS",
+  message: "successfully retrive the data"
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<error-handler ref="global-error-handlerError_Handler" />
+    </flow>
+    <flow name="get:\customers\(customerid):lm-customer-papi-config">
+        <ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="customerid">attributes.uriParams.'customerid'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  firstName: "Ram",
+  lastName: "Kumar",
+  email: "ram@gmail.com",
+  mobileNumber: 9999999999,
+  address: {
+    houseNo: "2/1",
+    address1: "kudi street,Namakkal,Tamilnadu",
+    address2: " ",
+    pincode: 637001,
+    town: "Namakkal",
+    city: "Namakkal",
+    state: "Tamilnadu",
+    country: "India"
+  }
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<error-handler ref="global-error-handlerError_Handler" />
+    </flow>
+    <flow name="get:\order\(orderid):lm-customer-papi-config">
+        <ee:transform doc:name="Get orderId">
+            <ee:variables>
+                <ee:set-variable variableName="orderid">attributes.uriParams.'orderid'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <flow-ref doc:name="Flow Reference" doc:id="09a8e3b1-6f91-4d34-9bf8-43dc4b7b27e4" name="implement-consumeFlow"/>
+		<ee:transform doc:name="Product values">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<error-handler ref="global-error-handlerError_Handler" />
+    </flow>
+</mule>

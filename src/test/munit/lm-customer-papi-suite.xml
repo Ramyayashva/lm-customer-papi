@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="lm-customer-papi-suite.xml" />
+	<munit:test name="lm-customer-papi-main-test" doc:id="3da8988d-e26c-41cf-be68-57a71423840a" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="cd139931-145b-4e0d-b7d8-866ba47fd6f5" processor="http:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-papi-httpListenerConfig" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="/api/*" attributeName="path" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="22280e35-b4e2-4742-8836-89fdf317ba42" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-papi-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="dd988cbc-8f86-43f1-a51b-e281028fcbec" >
+				<munit:payload value="#[readUrl('classpath://lmcustomerpapimaintest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://lmcustomerpapimaintest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to lm-customer-papi-main" doc:id="b481133e-9f3f-45e8-9424-4bd73c6e8f20" name="lm-customer-papi-main"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="588fe483-d58b-4939-bb52-a150e55a38a6" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import lmcustomerpapimaintest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="lm-customer-papi-console-test" doc:id="f2bd8748-6e86-40f7-8e8c-5a846b740057" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="3a40d07e-2c39-4ae8-b756-9d0a9f284e3b" processor="http:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-papi-httpListenerConfig" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="/console/*" attributeName="path" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="a9945531-7aba-432f-8119-667afe9b17d3" processor="apikit:console">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-papi-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="3c17344b-a449-4970-a55c-7c90c5bc7c8d" >
+				<munit:payload value="#[readUrl('classpath://lmcustomerpapiconsoletest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://lmcustomerpapiconsoletest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to lm-customer-papi-console" doc:id="65c8adc2-d8c2-4975-8e4a-13242e86d7ac" name="lm-customer-papi-console"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="8d7d1e1f-e86a-4b53-ab22-f684f50ae51d" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import lmcustomerpapiconsoletest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="put:\customers\(customerid):application\json:lm-customer-papi-config-test" doc:id="5b4d5fe1-8869-48dc-acc4-016fd01c036c" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Input" doc:id="8933d957-ca56-4c0f-b2b0-ca835a500076" >
+				<munit:payload value="#[output application/json  --- readUrl('classpath://putcustomerscustomeridapplicationjsonlmcustomerpapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json " />
+				<munit:attributes value="#[readUrl('classpath://putcustomerscustomeridapplicationjsonlmcustomerpapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://putcustomerscustomeridapplicationjsonlmcustomerpapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to put:\customers\(customerid):application\json:lm-customer-papi-config" doc:id="4ae459cf-06a8-47fa-a99b-2839ca58fc5c" name="put:\customers\(customerid):application\json:lm-customer-papi-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="c06ad36c-d573-44f8-a0cb-aa0d8cc90f89" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import putcustomerscustomeridapplicationjsonlmcustomerpapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="put:\order\(orderid):application\json:lm-customer-papi-config-test" doc:id="a042370c-f8dd-4a37-a644-e7434436f853" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Input" doc:id="9646eec2-7981-4f70-a60b-4bf72ee4e6b3" >
+				<munit:payload value="#[output application/json  --- readUrl('classpath://putorderorderidapplicationjsonlmcustomerpapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json " />
+				<munit:attributes value="#[readUrl('classpath://putorderorderidapplicationjsonlmcustomerpapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://putorderorderidapplicationjsonlmcustomerpapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to put:\order\(orderid):application\json:lm-customer-papi-config" doc:id="a2e6b0b2-5e9d-40aa-80c9-c75446bd6789" name="put:\order\(orderid):application\json:lm-customer-papi-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="b5ead7fd-d4d7-4c59-95cc-233ba7351962" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import putorderorderidapplicationjsonlmcustomerpapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="get:\order\(orderid):lm-customer-papi-config-test" doc:id="e2898bdf-6961-4e3f-8b25-313f1d5c3e49" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Input" doc:id="b886d508-6917-4cb2-b654-9c78a2e6cbbb" >
+				<munit:payload value="#[readUrl('classpath://getorderorderidlmcustomerpapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getorderorderidlmcustomerpapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getorderorderidlmcustomerpapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\order\(orderid):lm-customer-papi-config" doc:id="caaae20d-bc1e-4f6f-a67a-0fd6522f3af2" name="get:\order\(orderid):lm-customer-papi-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="4afed1e9-30c2-4ec7-a2f4-82f99a59042f" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getorderorderidlmcustomerpapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="get:\customers\(customerid):lm-customer-papi-config-test" doc:id="d9722730-05b5-4989-ae68-852ef1990f21" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Input" doc:id="32db79bf-b678-461f-bd21-6a0e5684a2ab" >
+				<munit:payload value="#[readUrl('classpath://getcustomerscustomeridlmcustomerpapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getcustomerscustomeridlmcustomerpapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getcustomerscustomeridlmcustomerpapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\customers\(customerid):lm-customer-papi-config" doc:id="3f5cad5d-c1d1-4439-a76b-9d316d743e44" name="get:\customers\(customerid):lm-customer-papi-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="fa5c3d3b-23e8-4bdf-a79e-9b8c56fad2cc" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getcustomerscustomeridlmcustomerpapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+<munit:test name="lm-customer-papi-main-test-error" doc:id="270f182c-0e88-477e-abab-a02d07620e5f" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="d02a187a-3783-4c85-a82c-2cbcbc5aadac" processor="http:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-papi-httpListenerConfig" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="/api/*" attributeName="path" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="ANY" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="1f3c8e61-baba-489c-be03-ae039a99d35f" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-papi-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="ANY" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<try doc:name="Try" doc:id="b3408a5b-1397-435f-b38f-554a6e05c026" >
+				<flow-ref doc:name="Flow-ref to lm-customer-papi-main" doc:id="c131012d-a54b-4dc2-a6df-74391dd24bdb" name="lm-customer-papi-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="b157e7a6-a275-4e74-b364-c73d279b7e1c" type="ANY"/>
+				</error-handler>
+			</try>
+
+		</munit:execution>
+	
+</munit:test>
+<munit:test name="lm-customer-papi-main-test-error1" doc:id="5af900fb-2f78-4331-9785-2fd122df537c" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="02b7863c-c283-4a21-9a27-29df22656210" processor="http:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-papi-httpListenerConfig" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="/api/*" attributeName="path" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:BAD_REQUEST" />
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="25657250-9021-4c04-aeaa-77f35e9fd91a" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-papi-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:BAD_REQUEST" />
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<try doc:name="Try" doc:id="75507fd2-4a29-488a-b46c-1de1799a4318" >
+				<flow-ref doc:name="Flow-ref to lm-customer-papi-main" doc:id="2d2b2e47-bc1b-427d-bc81-345224881e7d" name="lm-customer-papi-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="b730f6fd-1051-4b84-828d-be7863c6b24a" type="APIKIT:BAD_REQUEST"/>
+				</error-handler>
+			</try>
+
+		</munit:execution>
+	
+</munit:test>
+<munit:test name="lm-customer-papi-main-test-error2" doc:id="a5b31641-9308-4256-9a95-3c2eae347c70" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="382e93ec-3a10-40d2-a4b5-55f4e87225aa" processor="http:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-papi-httpListenerConfig" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="/api/*" attributeName="path" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="d39dc7dd-d687-479b-98e0-a36b4a2b4737" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-papi-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<try doc:name="Try" doc:id="2fe1bcf0-7927-4cd1-a822-76af55ab4693" >
+				<flow-ref doc:name="Flow-ref to lm-customer-papi-main" doc:id="95f1421c-f099-4e4c-95a7-4de44378822a" name="lm-customer-papi-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="6370868c-baa9-4330-81ab-960d1facad04" type="APIKIT:NOT_FOUND"/>
+				</error-handler>
+			</try>
+
+		</munit:execution>
+	
+</munit:test>
+<munit:test name="lm-customer-papi-main-test-error3" doc:id="0357990f-ca81-41b1-a1e9-f52d99a8a530" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="c34cc3b1-4f6a-43da-a913-e2144970fa17" processor="http:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-papi-httpListenerConfig" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="/api/*" attributeName="path" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:METHOD_NOT_ALLOWED" />
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="12576280-989a-41ef-919c-4b0b73b02a89" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-papi-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:METHOD_NOT_ALLOWED" />
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<try doc:name="Try" doc:id="141c91cb-7de1-4739-8042-8737e05b37d5" >
+				<flow-ref doc:name="Flow-ref to lm-customer-papi-main" doc:id="b85ffcd1-22e2-4292-9189-6b950e7554a8" name="lm-customer-papi-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="6143e114-e570-4cff-80bc-a537dc292749" type="APIKIT:METHOD_NOT_ALLOWED"/>
+				</error-handler>
+			</try>
+
+		</munit:execution>
+	
+</munit:test>
+<munit:test name="lm-customer-papi-main-test-error4" doc:id="c5b2e142-fe9e-41d0-91aa-8bd079d78793" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="53b16026-43d3-4bba-93a9-ab36be22cd27" processor="http:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-papi-httpListenerConfig" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="/api/*" attributeName="path" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_ACCEPTABLE" />
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="0a35375e-748c-4d79-96a7-45aeac3258a9" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-papi-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_ACCEPTABLE" />
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<try doc:name="Try" doc:id="afc169d9-e78f-43ed-b536-39f92e68bd1e" >
+				<flow-ref doc:name="Flow-ref to lm-customer-papi-main" doc:id="b3a01798-caba-4015-8b68-b6c379dae2c4" name="lm-customer-papi-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="87fbb3ff-c478-437e-a3c6-5a2793a7f049" type="APIKIT:NOT_ACCEPTABLE"/>
+				</error-handler>
+			</try>
+
+		</munit:execution>
+	
+</munit:test>
+<munit:test name="lm-customer-papi-main-test-error5" doc:id="08510089-a5d0-415c-9415-343f3deadee2" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="48d5eb66-a5f6-4984-ac3b-9c8e8e7ea480" processor="http:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-papi-httpListenerConfig" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="/api/*" attributeName="path" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:UNSUPPORTED_MEDIA_TYPE" />
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="76680ee0-b7e3-41a2-84b8-71e1b5888d35" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-papi-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:UNSUPPORTED_MEDIA_TYPE" />
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<try doc:name="Try" doc:id="8733bcd5-db80-4c5c-864f-3f6b444157d4" >
+				<flow-ref doc:name="Flow-ref to lm-customer-papi-main" doc:id="056919f2-1b82-4c40-8470-66cb2c93952d" name="lm-customer-papi-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="8faebe7a-5ba9-4a0e-aac1-aa5908292b23" type="APIKIT:UNSUPPORTED_MEDIA_TYPE"/>
+				</error-handler>
+			</try>
+
+		</munit:execution>
+	
+</munit:test>
+<munit:test name="lm-customer-papi-main-test-error6" doc:id="7e70daf7-13e5-4979-b114-4c53d1c47cc9" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="e74e397d-8666-4e40-a637-ce0263bd2265" processor="http:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-papi-httpListenerConfig" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="/api/*" attributeName="path" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_IMPLEMENTED" />
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="39f9f315-7ee4-47f7-aaa1-303e6fbcd724" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-papi-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_IMPLEMENTED" />
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<try doc:name="Try" doc:id="83a52f9e-ff11-46be-8d31-2883a835b823" >
+				<flow-ref doc:name="Flow-ref to lm-customer-papi-main" doc:id="9138eca8-fee9-4d0b-ae2c-25f4d8cdd1c1" name="lm-customer-papi-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="3e7e18af-542f-4965-9a63-c676a69d23a1" type="APIKIT:NOT_IMPLEMENTED"/>
+				</error-handler>
+			</try>
+
+		</munit:execution>
+	
+</munit:test>
+
+</mule>
